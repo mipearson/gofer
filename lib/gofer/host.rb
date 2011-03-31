@@ -1,9 +1,16 @@
 module Gofer
+  class HostError < Exception
+    def initialize host, message
+      super "#{host.hostname}: #{message}"
+    end
+  end
+ 
   class Host
 
-    attr_reader :last_exit_status
+    attr_reader :last_exit_status, :hostname
 
-    def initialize username, hostname, identity_file=nil
+    def initialize username, _hostname, identity_file=nil
+      @hostname = hostname
       @ssh = SshWrapper.new(username, hostname, identity_file)
     end
 
@@ -12,7 +19,7 @@ module Gofer
       if opts[:capture_exit_status]
         @last_exit_status = @ssh.last_exit_status
       elsif @ssh.last_exit_status != 0
-        raise HostError(self, "Command #{command} failed with exit status #{@ssh.last_exit_status}")
+        raise HostError.new(self, "Command #{command} failed with exit status #{@ssh.last_exit_status}")
       end
       @ssh.last_output
     end
@@ -27,7 +34,7 @@ module Gofer
       if @ssh.last_exit_status == 0
         @ssh.output
       else
-        raise HostError(self, "Could not read #{path}, exit status #{@ssh.last_exit_status}")
+        raise HostError.new(self, "Could not read #{path}, exit status #{@ssh.last_exit_status}")
       end
     end
 
@@ -36,7 +43,7 @@ module Gofer
       if @ssh.last_exit_status == 0
         @ssh.output.strip.split("\n")
       else
-        raise HostError(self, "Could not list #{path}, exit status #{@ssh.last_exit_status}")
+        raise HostError.new(self, "Could not list #{path}, exit status #{@ssh.last_exit_status}")
       end
     end
 
@@ -53,6 +60,3 @@ module Gofer
     end
   end
 end
-      
-        
-          
