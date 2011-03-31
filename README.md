@@ -1,9 +1,9 @@
 # Gofer!
 
-### Example:
+### Now:
 
     # Remote system usage
-    Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem').within do
+    Gofer::Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem').within do
       # Basic usage
       run "sudo stop mysqld"
 
@@ -20,27 +20,35 @@
       puts ls('a_remote_dir').join(", ")
 
       # error handling - default to critical failure if a command fails
-      run "false" # this will fail with 'Non-zero return code of 1'
-      run "false", :ignore_return_code => true # this won't ...
-      puts $? # and will set $?
-
-      # Separate the command from the arguments, system() style
-      run "echo" "Some" "arguments" "with" "'quotes'" "in" "them"
+      run "false" # this will fail
+      run "false", :capture_exit_status => true # this won't ...
+      puts last_exit_status # and will make the exit status available
 
       # stderr/stdout
       hello = run "echo hello" # will print 'Host my.host.com> hello'
       puts hello # will print "hello\n"
       # stdout/stderr will be interpolated for simplicity
 
-      # output capture
-      run "echo goodbye", :quiet => true # won't print anything
     end
 
     # alternate usage:
-    h = Host.new('ubuntu', 'my.host.com')
+    h = Gofer::Host.new('ubuntu', 'my.host.com')
     h.run('sudo mysqld stop')
     h.upload('file', 'remote_file')
     # etc..
 
+### Later:
+
+    # output capture
+    run "echo goodbye", :quiet => true # won't print anything
+  
+    # overriding defaults
+    set :quiet => true
+    set :capture_exit_status => false
+
+    # Separate the command from the arguments, system() style
+    run "echo" "Some" "arguments" "with" "'quotes'" "in" "them"
+    
     # Local system usage, too:
     run "hostname" # > my.macbook.com
+
