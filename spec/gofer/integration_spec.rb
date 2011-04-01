@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 describe Gofer do
  
@@ -14,6 +15,18 @@ describe Gofer do
 
   def in_tmpdir path
     File.join(@tmpdir, path)
+  end
+    
+  def with_local_tmpdir template
+    f = Tempfile.new template
+    path = f.path
+    f.unlink
+    FileUtils.mkdir path
+    begin
+      yield path
+    ensure
+      FileUtils.rm_rf path unless ENV['KEEPTMPDIR']
+    end
   end
     
   before :all do
@@ -66,6 +79,17 @@ describe Gofer do
     end
   end
 
+  describe :directory? do
+    it "should return true if a path is a directory" do
+      @host.directory?(@tmpdir).should be true
+    end
+
+    it "should return false if a path is not a directory" do
+      raw_ssh "touch #{in_tmpdir 'a_file'}"
+      @host.directory?(in_tmpdir('a_file')).should be false
+    end
+  end
+
   describe :read do
     it "should read in the contents of a file" do
       raw_ssh "echo 'hello' > #{@tmpdir}/hello.txt"
@@ -80,7 +104,50 @@ describe Gofer do
     end
   end
 
-  describe :upload
-  describe :download
+  describe :upload do
+    it "should upload a file to the remote server" do
+      f = Tempfile.new('upload_tmp')
+      begin
+        f.write('uploadtmp')
+        f.close
+        @host.upload(f.path, in_tmpdir('uploaded'))
+        raw_ssh("cat #{in_tmpdir 'uploaded'}").should == 'uploadtmp'
+      ensure
+        f.unlink
+      end
+    end
+    it "should upload a directory to the remote server" do
+      f = with_local_tmpdir('upload_dir_tmp') do |path|
+        system "echo 'hey' >> #{File.join(path, 'temp')}"
+        @host.upload(path, in_tmpdir('uploaded_dir'))
+        raw_ssh("cat #{in_tmpdir 'uploaded_dir/temp'}").should == "hey\n"
+      end
+    end
+  end
+
+  describe :download do
+    it "should download a file from the remove server" do
+      f = Tempfile.new('download_dir')
+      begin
+        f.close
+        raw_ssh "echo 'download' > #{in_tmpdir 'download'}"
+        @host.download(in_tmpdir('download'), f.path)
+        File.open(f.path).read.should == "download\n"
+      ensure
+        f.unlink
+      end
+    end
+
+    it "should download a directory from the remote server" do
+      with_local_tmpdir 'download_dir' do |path|
+        download_dir = in_tmpdir 'download_dir'
+        raw_ssh "mkdir #{download_dir} && echo 'sup' > #{download_dir}/hey"
+      
+        @host.download(download_dir, path)
+        File.open(path + '/download_dir/hey').read.should == "sup\n"
+      end
+    end
+  end
+
   describe :within
 end

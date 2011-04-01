@@ -1,4 +1,5 @@
 require 'net/ssh'
+require 'net/scp'
 
 module Gofer
   class SshWrapper
@@ -18,9 +19,35 @@ module Gofer
         ssh_execute(ssh, command, opts)
       end
     end
+    
+    def read_file path
+      a = nil
+      with_scp do |scp|
+        a = scp.download! path
+      end
+      a
+    end
+
+    def download from, to, opts={}
+      with_scp do |scp|
+        scp.download! from, to, opts
+      end
+    end
+
+    def upload from, to, opts={}
+      with_scp do |scp|
+        scp.upload! from, to, opts
+      end
+    end
 
     private
   
+    def with_scp 
+      Net::SCP.start(*net_ssh_credentials) do |scp|
+        yield scp
+      end
+    end
+
     def net_ssh_credentials
       creds = [@hostname, @username]
       creds << {:keys => [@identity_file] } if @identity_file

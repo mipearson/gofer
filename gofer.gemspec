@@ -20,4 +20,5 @@ server using Net::SSH
   s.require_paths = ["lib"]
   
   s.add_dependency('net-ssh', '>= 2.0.23')
+  s.add_dependency('net-scp', '>= 1.0.4')
 end

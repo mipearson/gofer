@@ -16,6 +16,7 @@
         run "rm -rf 'remote_directory'"
       end
 
+      # read/ls
       puts read('a_remote_file')
       puts ls('a_remote_dir').join(", ")
 
@@ -25,9 +26,17 @@
       puts last_exit_status # and will make the exit status available
 
       # stderr/stdout
-      hello = run "echo hello" # will print 'Host my.host.com> hello'
+      hello = run "echo hello" # will print 'hello'
       puts hello # will print "hello\n"
-      # stdout/stderr will be interpolated for simplicity
+
+      goodbye = run "echo goodbye 1>&2"
+      # goodbye will be empty, as we don't capture stderr by default
+  
+      goodbye = run "echo goodbye 1>&2", :capture_stderr => true # unless you ask for it
+
+      # output suppression
+      run "echo noisy", :quiet => true  # don't output from our command
+      run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!
 
     end
 
@@ -39,9 +48,12 @@
 
 ### Later:
 
-    # output capture
-    run "echo goodbye", :quiet => true # won't print anything
-  
+    write("a string buffer", 'a_remote_file')
+    # constant connection (no reconnect for each action)
+    h = Gofer::Host.new(..., :keep_open => true)
+    h.run( ... )
+    h.close
+
     # overriding defaults
     set :quiet => true
     set :capture_exit_status => false
@@ -51,4 +63,5 @@
     
     # Local system usage, too:
     run "hostname" # > my.macbook.com
+
 

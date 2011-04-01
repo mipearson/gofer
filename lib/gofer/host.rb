@@ -30,12 +30,12 @@ module Gofer
     end
 
     def read path
-      @ssh.run "cat #{path}", :quiet => true
-      if @ssh.last_exit_status == 0
-        @ssh.last_output
-      else
-        raise HostError.new(self, "Could not read #{path}, exit status #{@ssh.last_exit_status}")
-      end
+      @ssh.read_file path
+    end
+
+    def directory? path
+      @ssh.run "sh -c '[ -d #{path} ]'"
+      @ssh.last_exit_status == 0
     end
 
     def ls path
@@ -48,11 +48,11 @@ module Gofer
     end
 
     def upload from, to
-      @ssh.scp_to_host from, to
+      @ssh.upload from, to, :recursive => File.directory?(from)
     end
 
     def download from, to
-      @ssh.scp_from_host from, to
+      @ssh.download from, to, :recursive => directory?(from)
     end
 
     def within &block
