@@ -6,16 +6,18 @@ Gem::Specification.new do |s|
   s.name        = "gofer"
   s.version     = Gofer::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
-
-  s.rubyforge_project = "gofer"
+  s.authors     = ["Michael Pearson"]
+  s.email       = ["mipearson@gmail.com"]
+  s.homepage    = "https://github.com/mipearson/gofer"
+  s.summary     = %q{run commands on remote servers using SSH}
+  s.description = %q{
+Gofer provides a flexible and reliable model for performing tasks on remote
+server using Net::SSH
+}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+  
+  s.add_dependency('net-ssh', '>= 2.0.23')
 end

@@ -25,23 +25,23 @@ module Gofer
     end
 
     def exists? path
-      @ssh.run "[ -x #{path} ]"
+      @ssh.run "sh -c '[ -e #{path} ]'"
       @ssh.last_exit_status == 0
     end
 
     def read path
-      @ssh.run "cat #{path}", :capture_stderr => false
+      @ssh.run "cat #{path}", :quiet => true
       if @ssh.last_exit_status == 0
-        @ssh.output
+        @ssh.last_output
       else
         raise HostError.new(self, "Could not read #{path}, exit status #{@ssh.last_exit_status}")
       end
     end
 
     def ls path
-      @ssh.run "ls -1 --color=never #{path}"
+      @ssh.run "ls -1 --color=never #{path}", :quiet => true
       if @ssh.last_exit_status == 0
-        @ssh.output.strip.split("\n")
+        @ssh.last_output.strip.split("\n")
       else
         raise HostError.new(self, "Could not list #{path}, exit status #{@ssh.last_exit_status}")
       end
