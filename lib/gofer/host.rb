@@ -10,7 +10,7 @@ module Gofer
     attr_reader :last_exit_status, :hostname
 
     def initialize username, _hostname, identity_file=nil
-      @hostname = hostname
+      @hostname = _hostname
       @ssh = SshWrapper.new(username, hostname, identity_file)
     end
 
@@ -39,7 +39,7 @@ module Gofer
     end
 
     def ls path
-      @ssh.run "ls -1 --color=never #{path}", :quiet => true
+      @ssh.run "ls -1 #{path}", :quiet => true
       if @ssh.last_exit_status == 0
         @ssh.last_output.strip.split("\n")
       else

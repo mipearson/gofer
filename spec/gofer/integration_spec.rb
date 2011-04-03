@@ -41,6 +41,12 @@ describe Gofer do
       raw_ssh "rm -rf #{@tmpdir}" if @tmpdir && @tmpdir =~ %r{gofertest}
     end
   end
+  
+  describe :hostname do
+    it "should be the hostname of the host we're connecting to" do
+      @host.hostname.should == HOSTNAME
+    end
+  end
 
   describe :run do
     it "should run a command and capture its output" do
@@ -149,5 +155,11 @@ describe Gofer do
     end
   end
 
-  describe :within
+  describe :within do
+    it "should execute commands in the context of the host instance" do
+      @host.within do
+        run("echo sup", :quiet => true).should == "sup\n"
+      end
+    end
+  end
 end
