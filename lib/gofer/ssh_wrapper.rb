@@ -15,9 +15,11 @@ module Gofer
     end
 
     def run command, opts={}
+      response = nil
       Net::SSH.start(*net_ssh_credentials) do |ssh|
-        ssh_execute(ssh, command, opts)
+        response = ssh_execute(ssh, command, opts)
       end
+      response
     end
     
     def read_file path
@@ -55,7 +57,7 @@ module Gofer
     end
 
     def ssh_execute(ssh, command, opts={})
-      output = ''
+      stdout, stderr, output = '', '', ''
       exit_code = 0
       ssh.open_channel do |channel|
         channel.exec(command) do |ch, success|
@@ -64,13 +66,15 @@ module Gofer
           end
 
           channel.on_data do |ch, data|  # stdout
+            stdout += data
             output += data
             $stdout.print data unless opts[:quiet]
           end
 
           channel.on_extended_data do |ch, type, data|
             next unless type == 1 # only handle stderr
-            output += data if opts[:capture_stderr]
+            stderr += data
+            output += data
             $stderr.print data unless opts[:quiet_stderr]
           end
 
@@ -83,9 +87,7 @@ module Gofer
       end
 
       ssh.loop
-      
-      @last_exit_status = exit_code
-      @last_output = output
+      Gofer::Response.new(stdout, stderr, output, exit_code)
     end
   end
 end

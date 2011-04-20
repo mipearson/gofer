@@ -15,18 +15,15 @@ module Gofer
     end
 
     def run command, opts={}
-      @ssh.run command, opts
-      if opts[:capture_exit_status]
-        @last_exit_status = @ssh.last_exit_status
-      elsif @ssh.last_exit_status != 0
+      response = @ssh.run command, opts
+      if !opts[:capture_exit_status] && response.exit_status != 0
         raise HostError.new(self, "Command #{command} failed with exit status #{@ssh.last_exit_status}")
       end
-      @ssh.last_output
+      response
     end
 
     def exists? path
-      @ssh.run "sh -c '[ -e #{path} ]'"
-      @ssh.last_exit_status == 0
+      @ssh.run("sh -c '[ -e #{path} ]'").exit_status == 0
     end
 
     def read path
@@ -34,16 +31,15 @@ module Gofer
     end
 
     def directory? path
-      @ssh.run "sh -c '[ -d #{path} ]'"
-      @ssh.last_exit_status == 0
+      @ssh.run("sh -c '[ -d #{path} ]'").exit_status == 0
     end
 
     def ls path
-      @ssh.run "ls -1 #{path}", :quiet => true
-      if @ssh.last_exit_status == 0
-        @ssh.last_output.strip.split("\n")
+      response = @ssh.run "ls -1 #{path}", :quiet => true
+      if response.exit_status == 0
+        response.stdout.strip.split("\n")
       else
-        raise HostError.new(self, "Could not list #{path}, exit status #{@ssh.last_exit_status}")
+        raise HostError.new(self, "Could not list #{path}, exit status #{response.exit_status}")
       end
     end
 

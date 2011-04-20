@@ -5,9 +5,9 @@
 **Gofer** has been written to support the needs of system automation scripts. As such, **gofer** will:
 
   * automatically raise an error if a command returns a non-zero exit status
-  * print and capture STDOUT automatically
-  * print STDERR but don't capture it
-  * override the above: return non-zero exit status instead of raising an error, capture STDERR, suppress output
+  * print and capture STDOUT and STDERR automatically
+  * allow you to access captured STDOUT and STDERR individually or as a combined string
+  * override the above: return non-zero exit status instead of raising an error, suppress output
 
 ## Examples
 
@@ -31,18 +31,16 @@
 
       # error handling - default to critical failure if a command fails
       run "false" # this will fail
-      run "false", :capture_exit_status => true # this won't ...
-      puts last_exit_status # and will make the exit status available
+      response = run "false", :capture_exit_status => true # this won't ...
+      puts response.exit_status # and will make the exit status available
 
       # stderr/stdout
-      hello = run "echo hello" # will print 'hello'
-      puts hello # will print "hello\n"
-
-      goodbye = run "echo goodbye 1>&2"
-      # goodbye will be empty, as we don't capture stderr by default
-  
-      goodbye = run "echo goodbye 1>&2", :capture_stderr => true # unless you ask for it
-
+      response = run "echo hello; echo goodbye 1>&2\n"
+      puts response         # will print "hello\n"
+      puts response.stdout  # will also print "hello\n"
+      puts response.stderr  # will print "goodbye\n"
+      puts response.output  # will print "hello\ngoodbye\n"
+      
       # output suppression
       run "echo noisy", :quiet => true  # don't output from our command
       run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!

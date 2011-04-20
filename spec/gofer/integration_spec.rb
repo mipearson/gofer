@@ -49,19 +49,26 @@ describe Gofer do
   end
 
   describe :run do
-    it "should run a command and capture its output" do
-      output = @host.run "echo hello", :quiet => true
-      output.should == "hello\n"
-    end
-
-    it "should run a command not capture its stderr by default" do
-      output = @host.run "echo hello 1>&2", :quiet_stderr => true
-      output.should == ""
-    end
-
-    it "should run a command capture its stderr if asked" do
-      output = @host.run "echo hello 1>&2", :quiet_stderr => true, :capture_stderr => true
-      output.should == "hello\n"
+    describe "with stdout and stderr responses" do
+      before :all do 
+        @response = @host.run "echo stdout; echo stderr 1>&2", :quiet => true, :quiet_stderr => true
+      end
+    
+      it "should capture stdout in @response.stdout" do
+        @response.stdout.should == "stdout\n"
+      end
+    
+      it "should capture stderr in @response.stderr" do
+        @response.stderr.should == "stderr\n"
+      end
+    
+      it "should combine captured stdout / stderr in @response.output" do
+        @response.output.should == "stdout\nstderr\n"
+      end
+    
+      it "@response by itself should be the captured stdout" do
+        @response.should == "stdout\n"
+      end
     end
   
     it "should error if a command returns a non-zero response" do
@@ -69,8 +76,8 @@ describe Gofer do
     end
 
     it "should capture a non-zero exit status if asked" do
-      @host.run "false", :capture_exit_status => true
-      @host.last_exit_status.should == 1
+      response = @host.run "false", :capture_exit_status => true
+      response.exit_status.should == 1
     end
   end
 
