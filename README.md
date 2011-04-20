@@ -11,37 +11,44 @@
 
 ## Examples
 
+### Instantiation
+
     h = Gofer::Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem')
 
-    # Basic usage
+### Run a command
+
     h.run "sudo stop mysqld"
 
-    # Copying files
-    h.upload 'file' 'remote_file'
+### Copy some files
+
+    h.upload 'file', 'remote_file'
     h.download 'remote_dir', 'dir'
 
-    # Filesystem inspection
+### Interact with the filesystem
+
     if h.exists?('remote_directory')
       h.run "rm -rf 'remote_directory'"
     end
 
-    # read/ls
     puts h.read('a_remote_file')
     puts h.ls('a_remote_dir').join(", ")
+    
+### Respond to command errors
 
-    # error handling - default to critical failure if a command fails
     h.run "false" # this will fail
     response = h.run "false", :capture_exit_status => true # this won't ...
     puts response.exit_status # and will make the exit status available
 
-    # stderr/stdout
+### Capture output
+
     response = h.run "echo hello; echo goodbye 1>&2\n"
     puts response         # will print "hello\n"
     puts response.stdout  # will also print "hello\n"
     puts response.stderr  # will print "goodbye\n"
     puts response.output  # will print "hello\ngoodbye\n"
 
-    # output suppression
+### Suppress output
+
     h.run "echo noisy", :quiet => true  # don't output from our command
     h.run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!
 
@@ -56,9 +63,6 @@
     # overriding defaults
     h.set :quiet => true
     h.set :capture_exit_status => false
-
-    # Separate the command from the arguments, system() style
-    h.run "echo" "Some" "arguments" "with" "'quotes'" "in" "them"
     
     # Local system usage, too:
     Gofer::Localhost.new.run "hostname" # > my.macbook.com
@@ -72,6 +76,7 @@
  
 * ls, exists?, directory? should use sftp if available rather than shell commands
 * wrap STDOUT with host prefix for easy identification of system output
+* RDoc
 
 ## License
 
