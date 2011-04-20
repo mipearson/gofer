@@ -11,65 +11,57 @@
 
 ## Examples
 
-    # in a block
-    Gofer::Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem').within do
-      # Basic usage
-      run "sudo stop mysqld"
+    h = Gofer::Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem')
 
-      # Copying files
-      upload 'file' 'remote_file'
-      download 'remote_dir', 'dir'
+    # Basic usage
+    h.run "sudo stop mysqld"
 
-      # Filesystem inspection
-      if exists?('remote_directory')
-        run "rm -rf 'remote_directory'"
-      end
+    # Copying files
+    h.upload 'file' 'remote_file'
+    h.download 'remote_dir', 'dir'
 
-      # read/ls
-      puts read('a_remote_file')
-      puts ls('a_remote_dir').join(", ")
-
-      # error handling - default to critical failure if a command fails
-      run "false" # this will fail
-      response = run "false", :capture_exit_status => true # this won't ...
-      puts response.exit_status # and will make the exit status available
-
-      # stderr/stdout
-      response = run "echo hello; echo goodbye 1>&2\n"
-      puts response         # will print "hello\n"
-      puts response.stdout  # will also print "hello\n"
-      puts response.stderr  # will print "goodbye\n"
-      puts response.output  # will print "hello\ngoodbye\n"
-      
-      # output suppression
-      run "echo noisy", :quiet => true  # don't output from our command
-      run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!
-
+    # Filesystem inspection
+    if h.exists?('remote_directory')
+      h.run "rm -rf 'remote_directory'"
     end
 
-    # using the instance directly
-    h = Gofer::Host.new('ubuntu', 'my.host.com')
-    h.run('sudo mysqld stop')
-    h.upload('file', 'remote_file')
-    # etc..
+    # read/ls
+    puts h.read('a_remote_file')
+    puts h.ls('a_remote_dir').join(", ")
+
+    # error handling - default to critical failure if a command fails
+    h.run "false" # this will fail
+    response = h.run "false", :capture_exit_status => true # this won't ...
+    puts response.exit_status # and will make the exit status available
+
+    # stderr/stdout
+    response = h.run "echo hello; echo goodbye 1>&2\n"
+    puts response         # will print "hello\n"
+    puts response.stdout  # will also print "hello\n"
+    puts response.stderr  # will print "goodbye\n"
+    puts response.output  # will print "hello\ngoodbye\n"
+
+    # output suppression
+    h.run "echo noisy", :quiet => true  # don't output from our command
+    h.run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!
 
 ## Planned Features
 
-    write("a string buffer", 'a_remote_file')
+    h.write("a string buffer", 'a_remote_file')
     # constant connection (no reconnect for each action)
-    h = Gofer::Host.new(..., :keep_open => true)
-    h.run( ... )
-    h.close
-
+    Gofer::Host.new(...).open do |h|
+      h.run( ... )
+    end
+    
     # overriding defaults
-    set :quiet => true
-    set :capture_exit_status => false
+    h.set :quiet => true
+    h.set :capture_exit_status => false
 
     # Separate the command from the arguments, system() style
-    run "echo" "Some" "arguments" "with" "'quotes'" "in" "them"
+    h.run "echo" "Some" "arguments" "with" "'quotes'" "in" "them"
     
     # Local system usage, too:
-    run "hostname" # > my.macbook.com
+    Gofer::Localhost.new.run "hostname" # > my.macbook.com
 
 ## Testing
   

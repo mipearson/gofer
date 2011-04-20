@@ -50,9 +50,5 @@ module Gofer
     def download from, to
       @ssh.download from, to, :recursive => directory?(from)
     end
-
-    def within &block
-      instance_eval &block
-    end
   end
 end

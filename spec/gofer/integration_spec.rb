@@ -161,12 +161,4 @@ describe Gofer do
       end
     end
   end
-
-  describe :within do
-    it "should execute commands in the context of the host instance" do
-      @host.within do
-        run("echo sup", :quiet => true).should == "sup\n"
-      end
-    end
-  end
 end
