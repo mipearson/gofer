@@ -7,7 +7,7 @@ module Gofer
  
   class Host
 
-    attr_reader :last_exit_status, :hostname
+    attr_reader :hostname
 
     def initialize username, _hostname, identity_file=nil
       @hostname = _hostname
