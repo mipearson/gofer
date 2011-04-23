@@ -2,7 +2,7 @@ require 'net/ssh'
 require 'net/scp'
 
 module Gofer
-  class SshWrapper
+  class SshWrapper # :nodoc:
 
     attr_reader :last_output, :last_exit_status
 

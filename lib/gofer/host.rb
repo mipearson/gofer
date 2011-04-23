@@ -1,12 +1,12 @@
 module Gofer
-  class HostError < Exception
+  class HostError < Exception # :nodoc:
     def initialize host, message
       super "#{host.hostname}: #{message}"
     end
   end
  
   class Host
-
+    
     attr_reader :hostname
 
     def initialize username, _hostname, identity_file=nil
@@ -14,6 +14,19 @@ module Gofer
       @ssh = SshWrapper.new(username, hostname, identity_file)
     end
 
+    # Run +command+.
+    #
+    # Raise an error if +command+ exits with a non-zero status.
+    #
+    # Print +stdout+ and +stderr+ as they're received. 
+    #
+    # Return a Gofer::Response object.
+    # 
+    # Options:
+    #
+    # +quiet+:: Don't print +stdout+
+    # +quiet_stderr+:: Don't print +stderr+
+    # +capture_exit_status+:: Don't raise an error on a non-zero exit status
     def run command, opts={}
       response = @ssh.run command, opts
       if !opts[:capture_exit_status] && response.exit_status != 0
@@ -22,18 +35,22 @@ module Gofer
       response
     end
 
+    # Return +true+ if +path+ exits.
     def exists? path
       @ssh.run("sh -c '[ -e #{path} ]'").exit_status == 0
     end
 
+    # Return the contents of the file at +path+. 
     def read path
       @ssh.read_file path
     end
 
+    # Return +true+ if +path+ is a directory.
     def directory? path
       @ssh.run("sh -c '[ -d #{path} ]'").exit_status == 0
     end
 
+    # Return a list of files in the directory at +path+.
     def ls path
       response = @ssh.run "ls -1 #{path}", :quiet => true
       if response.exit_status == 0
@@ -43,10 +60,12 @@ module Gofer
       end
     end
 
+    # Upload the file or directory at +from+ to +to+. 
     def upload from, to
       @ssh.upload from, to, :recursive => File.directory?(from)
     end
 
+    # Download the file or directory at +from+ to +to+
     def download from, to
       @ssh.download from, to, :recursive => directory?(from)
     end
