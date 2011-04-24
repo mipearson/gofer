@@ -8,6 +8,7 @@
   * print and capture STDOUT and STDERR automatically
   * allow you to access captured STDOUT and STDERR individually or as a combined string
   * override the above: return non-zero exit status instead of raising an error, suppress output
+  * persist the SSH connection so that multiple commands don't incur connection penalties
 
 ## Examples
 

@@ -15,39 +15,29 @@ module Gofer
     end
 
     def run command, opts={}
-      response = nil
-      Net::SSH.start(*net_ssh_credentials) do |ssh|
-        response = ssh_execute(ssh, command, opts)
-      end
-      response
+      ssh_execute(ssh, command, opts)
     end
     
     def read_file path
-      a = nil
-      with_scp do |scp|
-        a = scp.download! path
-      end
-      a
+      scp.download! path
     end
 
     def download from, to, opts={}
-      with_scp do |scp|
-        scp.download! from, to, opts
-      end
+      scp.download! from, to, opts
     end
 
     def upload from, to, opts={}
-      with_scp do |scp|
-        scp.upload! from, to, opts
-      end
+      scp.upload! from, to, opts
     end
 
     private
   
-    def with_scp 
-      Net::SCP.start(*net_ssh_credentials) do |scp|
-        yield scp
-      end
+    def ssh
+      @ssh ||= Net::SSH.start(*net_ssh_credentials)
+    end
+    
+    def scp 
+      @scp ||= Net::SCP.new(ssh)
     end
 
     def net_ssh_credentials
