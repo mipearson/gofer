@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.1.2 03/05/2011
+
+ * Pass through Gofer::Host instantiation options straight through to Net::SSH.
+
 ### v0.1.1 23/04/2011
 
  * Minimal RDoc added.
