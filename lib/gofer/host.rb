@@ -9,9 +9,13 @@ module Gofer
     
     attr_reader :hostname
 
-    def initialize username, _hostname, identity_file=nil
+    # Create a new Host connection
+    # 
+    # +opts+ is passed through directly to Net::SSH.start
+    # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
+    def initialize username, _hostname, opts={}
       @hostname = _hostname
-      @ssh = SshWrapper.new(username, hostname, identity_file)
+      @ssh = SshWrapper.new(username, hostname, opts)
     end
 
     # Run +command+.

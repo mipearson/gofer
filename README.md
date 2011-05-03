@@ -14,7 +14,7 @@
 
 ### Instantiation
 
-    h = Gofer::Host.new('ubuntu', 'my.host.com', :identity_file => 'key.pem')
+    h = Gofer::Host.new('ubuntu', 'my.host.com', :keys => ['key.pem'])
 
 ### Run a command
 
@@ -77,7 +77,7 @@
  
 * ls, exists?, directory? should use sftp if available rather than shell commands
 * wrap STDOUT with host prefix for easy identification of system output
-* RDoc
+* Deal with timeouts/disconnects on persistent connections
 
 ## License
 
