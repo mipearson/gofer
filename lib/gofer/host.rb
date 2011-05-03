@@ -15,7 +15,18 @@ module Gofer
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
     def initialize username, _hostname, opts={}
       @hostname = _hostname
-      @ssh = SshWrapper.new(username, hostname, opts)
+      
+      # support legacy positional argument use
+      if opts.is_a? String
+        opts = { :keys => [opts]}
+      end
+      
+      # support legacy identity_file argument
+      if opts[:identity_file]
+        opts[:keys] = [opts.delete(:identity_file)]
+      end
+      
+      @ssh = SshWrapper.new(hostname, username, opts)
     end
 
     # Run +command+.

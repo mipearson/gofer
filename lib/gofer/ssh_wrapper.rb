@@ -6,23 +6,8 @@ module Gofer
 
     attr_reader :last_output, :last_exit_status
 
-    def initialize username, hostname, opts={}
-      @username = username
-      @hostname = hostname
-      @last_exit_status = nil
-      @last_output = nil
-      
-      # support legacy positional argument use
-      if opts.is_a? String
-        opts = { :keys => [opts]}
-      end
-      
-      # support legacy identity_file argument
-      if opts[:identity_file]
-        opts[:keys] = [opts.delete(:identity_file)]
-      end
-      
-      @net_ssh_options = opts
+    def initialize *args
+      @net_ssh_args = args
     end
 
     def run command, opts={}
@@ -44,16 +29,11 @@ module Gofer
     private
   
     def ssh
-      @ssh ||= Net::SSH.start(*net_ssh_credentials)
+      @ssh ||= Net::SSH.start(*@net_ssh_args)
     end
     
     def scp 
       @scp ||= Net::SCP.new(ssh)
-    end
-
-    def net_ssh_credentials
-      creds = [@hostname, @username, @net_ssh_options]
-      creds
     end
 
     def ssh_execute(ssh, command, opts={})
