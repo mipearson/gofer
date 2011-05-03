@@ -14,7 +14,7 @@
 
 ### Instantiation
 
-    h = Gofer::Host.new('ubuntu', 'my.host.com', :keys => ['key.pem'])
+    h = Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
 
 ### Run a command
 

@@ -30,7 +30,7 @@ describe Gofer do
   end
     
   before :all do
-    @host = Gofer::Host.new(USERNAME, HOSTNAME, :keys => [IDENTITY_FILE])
+    @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE])
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
   end
 
@@ -44,11 +44,11 @@ describe Gofer do
   
   describe :new do
     it "should support the legacy positional argument" do
-      Gofer::Host.new(USERNAME, HOSTNAME, IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
+      Gofer::Host.new(HOSTNAME, USERNAME, IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
     end
     
     it "should support the legacy identity_file key" do
-      Gofer::Host.new(USERNAME, HOSTNAME, :identity_file => IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
+      Gofer::Host.new(HOSTNAME, USERNAME, :identity_file => IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
     end
   end
   

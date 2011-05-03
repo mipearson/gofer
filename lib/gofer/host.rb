@@ -13,7 +13,7 @@ module Gofer
     # 
     # +opts+ is passed through directly to Net::SSH.start
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
-    def initialize username, _hostname, opts={}
+    def initialize _hostname, username, opts={}
       @hostname = _hostname
       
       # support legacy positional argument use

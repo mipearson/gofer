@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.2.0 03/05/2011
+
+ * Flip ordering of username/hostname on instantiation to match that of Net::SSH
+ 
 ### v0.1.2 03/05/2011
 
  * Pass through Gofer::Host instantiation options straight through to Net::SSH.
