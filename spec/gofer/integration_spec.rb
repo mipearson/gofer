@@ -31,6 +31,7 @@ describe Gofer do
     
   before :all do
     @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE])
+    @host.quiet = true
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
   end
 
@@ -61,7 +62,7 @@ describe Gofer do
   describe :run do
     describe "with stdout and stderr responses" do
       before :all do 
-        @response = @host.run "echo stdout; echo stderr 1>&2", :quiet => true, :quiet_stderr => true
+        @response = @host.run "echo stdout; echo stderr 1>&2", :quiet_stderr => true
       end
     
       it "should capture stdout in @response.stdout" do
@@ -80,7 +81,7 @@ describe Gofer do
         @response.should == "stdout\n"
       end
     end
-  
+      
     it "should error if a command returns a non-zero response" do
       lambda {@host.run "false"}.should raise_error /failed with exit status/
     end

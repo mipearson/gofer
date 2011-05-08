@@ -8,6 +8,7 @@ module Gofer
   class Host
     
     attr_reader :hostname
+    attr_accessor :quiet
 
     # Create a new Host connection
     # 
@@ -15,6 +16,7 @@ module Gofer
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
     def initialize _hostname, username, opts={}
       @hostname = _hostname
+      @quiet = false
       
       # support legacy positional argument use
       if opts.is_a? String
@@ -39,10 +41,11 @@ module Gofer
     # 
     # Options:
     #
-    # +quiet+:: Don't print +stdout+
+    # +quiet+:: Don't print +stdout+, can also be set with +quiet=+ on the instance
     # +quiet_stderr+:: Don't print +stderr+
     # +capture_exit_status+:: Don't raise an error on a non-zero exit status
     def run command, opts={}
+      opts[:quiet] = quiet unless opts.include?(:quiet)
       response = @ssh.run command, opts
       if !opts[:capture_exit_status] && response.exit_status != 0
         raise HostError.new(self, "Command #{command} failed with exit status #{@ssh.last_exit_status}")

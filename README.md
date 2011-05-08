@@ -36,7 +36,7 @@
     
 ### Respond to command errors
 
-    h.run "false" # this will fail
+    h.run "false" # this will raise an error
     response = h.run "false", :capture_exit_status => true # this won't ...
     puts response.exit_status # and will make the exit status available
 
@@ -50,8 +50,9 @@
 
 ### Suppress output
 
-    h.run "echo noisy", :quiet => true  # don't output from our command
-    h.run "echo noisier 1>&2", :quiet_stderr => true # don't even output stderr!
+    h.run "echo noisy", :quiet => true               # don't print stdout
+    h.run "echo noisier 1>&2", :quiet_stderr => true # don't print stderr
+    h.quiet = true                                   # never print stdout
 
 ## Planned Features
 

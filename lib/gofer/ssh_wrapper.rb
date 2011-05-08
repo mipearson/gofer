@@ -40,6 +40,7 @@ module Gofer
       stdout, stderr, output = '', '', ''
       exit_code = 0
       ssh.open_channel do |channel|
+        
         channel.exec(command) do |ch, success|
           unless success
             raise "Couldn't execute command #{command} (ssh channel failure)"

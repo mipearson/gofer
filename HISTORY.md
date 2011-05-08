@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.2.1 08/05/2011
+
+ * Add `quiet=` to Host instance to allow setting quiet to be the default.
+
 ### v0.2.0 03/05/2011
 
  * Flip ordering of username/hostname on instantiation to match that of Net::SSH
