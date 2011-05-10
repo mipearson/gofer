@@ -59,29 +59,34 @@ describe Gofer do
     end
   end
 
+  shared_examples_for "an output capturer" do
+    it "and capture stdout in @response.stdout" do
+      @response.stdout.should == "stdout\n"
+    end
+  
+    it "and capture stderr in @response.stderr" do
+      @response.stderr.should == "stderr\n"
+    end
+  
+    it "and combine captured stdout / stderr in @response.output" do
+      @response.output.should == "stdout\nstderr\n"
+    end
+  
+    it "and @response by itself should be the captured stdout" do
+      @response.should == "stdout\n"
+    end
+  end
+  
   describe :run do
-    describe "with stdout and stderr responses" do
+      
+    describe "with a stdout and stderr responses" do
       before :all do 
         @response = @host.run "echo stdout; echo stderr 1>&2", :quiet_stderr => true
       end
-    
-      it "should capture stdout in @response.stdout" do
-        @response.stdout.should == "stdout\n"
-      end
-    
-      it "should capture stderr in @response.stderr" do
-        @response.stderr.should == "stderr\n"
-      end
-    
-      it "should combine captured stdout / stderr in @response.output" do
-        @response.output.should == "stdout\nstderr\n"
-      end
-    
-      it "@response by itself should be the captured stdout" do
-        @response.should == "stdout\n"
-      end
-    end
       
+      it_should_behave_like "an output capturer"
+    end
+
     it "should error if a command returns a non-zero response" do
       lambda {@host.run "false"}.should raise_error /failed with exit status/
     end
@@ -91,7 +96,20 @@ describe Gofer do
       response.exit_status.should == 1
     end
   end
-
+  
+  describe :run_multiple do
+    describe "with stdout and stderr responses" do
+      before :all do
+        @response = @host.run_multiple ["echo stdout", "echo stderr 1>&2"], :quiet_stderr => true
+      end
+      it_should_behave_like "an output capturer"
+    end
+    
+    it "should error if a command returns a non-zero response" do
+      lambda {@host.run_multiple ["echo", "false"]}.should raise_error /failed with exit status/
+    end
+  end
+    
   describe :exists? do
     it "should return true if a path or file exists" do
       raw_ssh "touch #{in_tmpdir 'exists'}"

@@ -1,16 +1,20 @@
 # Revision History
 
+### v0.2.2 10/05/20011
+
+ * Add `run_multiple` method to `Gofer::Host`
+ 
 ### v0.2.1 08/05/2011
 
  * Add `quiet=` to Host instance to allow setting quiet to be the default.
 
 ### v0.2.0 03/05/2011
 
- * Flip ordering of username/hostname on instantiation to match that of Net::SSH
+ * Flip ordering of username/hostname on instantiation to match that of `Net::SSH`
  
 ### v0.1.2 03/05/2011
 
- * Pass through Gofer::Host instantiation options straight through to Net::SSH.
+ * Pass through `Gofer::Host` instantiation options straight through to `Net::SSH`.
 
 ### v0.1.1 23/04/2011
 

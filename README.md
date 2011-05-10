@@ -54,6 +54,11 @@
     h.run "echo noisier 1>&2", :quiet_stderr => true # don't print stderr
     h.quiet = true                                   # never print stdout
 
+### Run multiple commands
+    
+    response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
+    puts response.stdout # will print "hello\ngoodbye\n"
+    
 ## Planned Features
 
     h.write("a string buffer", 'a_remote_file')

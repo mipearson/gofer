@@ -52,6 +52,33 @@ module Gofer
       end
       response
     end
+    
+    # Run +commands+ one by one in order.
+    #
+    # Raise an error if a command in +commands+ exits with a non-zero status.
+    #
+    # Print +stdout+ and +stderr+ as they're received. 
+    #
+    # Return a Gofer::Response object.
+    # 
+    # Options:
+    #
+    # +quiet+:: Don't print +stdout+, can also be set with +quiet=+ on the instance
+    # +quiet_stderr+:: Don't print +stderr+
+    #
+    # The behaviour of passing +capture_exit_status+ here is undefined.
+    def run_multiple commands, opts={}
+      return if commands.empty?
+      
+      responses = commands.map do |command|
+        run command, opts
+      end
+      
+      first_response = responses.shift
+      responses.reduce(first_response) do |cursor, response|
+        Response.new(cursor.stdout + response.stdout, cursor.stderr + response.stderr, cursor.output + response.output, 0)
+      end
+    end
 
     # Return +true+ if +path+ exits.
     def exists? path
