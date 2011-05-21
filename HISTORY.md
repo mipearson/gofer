@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.2.3 21/05/2011
+
+ * Add `write` command to `Gofer::Host`
+
 ### v0.2.2 10/05/20011
 
  * Add `run_multiple` method to `Gofer::Host`

@@ -1,3 +1,5 @@
+require 'tempfile'
+
 module Gofer
   class HostError < Exception # :nodoc:
     def initialize host, message
@@ -113,6 +115,15 @@ module Gofer
     # Download the file or directory at +from+ to +to+
     def download from, to
       @ssh.download from, to, :recursive => directory?(from)
+    end
+    
+    # Write +data+ to a file at +to+
+    def write data, to
+      Tempfile.open "gofer_write" do |file|
+        file.write data
+        file.close
+        @ssh.upload(file.path, to, :recursive => false)
+      end
     end
   end
 end

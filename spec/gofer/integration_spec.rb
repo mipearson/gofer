@@ -166,6 +166,13 @@ describe Gofer do
       end
     end
   end
+  
+  describe :write do
+    it "should write a file to the remote server" do
+      @host.write("some data\n", in_tmpdir('written'))
+      raw_ssh("cat #{in_tmpdir 'written'}").should == "some data\n"
+    end
+  end
 
   describe :download do
     it "should download a file from the remove server" do

@@ -31,6 +31,7 @@
       h.run "rm -rf 'remote_directory'"
     end
 
+    h.write("a string buffer", 'a_remote_file')
     puts h.read('a_remote_file')
     puts h.ls('a_remote_dir').join(", ")
     
@@ -61,7 +62,6 @@
     
 ## Planned Features
 
-    h.write("a string buffer", 'a_remote_file')
     # constant connection (no reconnect for each action)
     Gofer::Host.new(...).open do |h|
       h.run( ... )
