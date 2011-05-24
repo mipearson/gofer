@@ -30,8 +30,7 @@ describe Gofer do
   end
     
   before :all do
-    @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE])
-    @host.quiet = true
+    @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
   end
 

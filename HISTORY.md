@@ -1,5 +1,8 @@
 # Revision History
+### v0.2.4 24/05/2011
 
+ * Add `:quiet` as an option on `Gofer::Host` instantiation
+ 
 ### v0.2.3 21/05/2011
 
  * Add `write` command to `Gofer::Host`

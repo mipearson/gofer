@@ -14,16 +14,20 @@ module Gofer
 
     # Create a new Host connection
     # 
-    # +opts+ is passed through directly to Net::SSH.start
+    # Options:
+    # 
+    # +quiet+:: Don't print stdout output from +run+ commands
+    # All other+opts+ is passed through directly to Net::SSH.start
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
     def initialize _hostname, username, opts={}
       @hostname = _hostname
-      @quiet = false
       
       # support legacy positional argument use
       if opts.is_a? String
         opts = { :keys => [opts]}
       end
+      
+      @quiet = opts.delete(:quiet)
       
       # support legacy identity_file argument
       if opts[:identity_file]
