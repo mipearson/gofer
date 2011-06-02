@@ -1,4 +1,8 @@
 # Revision History
+### v0.2.5 02/06/2011
+
+ * `#exists?` -> `#exist?` to be consistent with `File.exist?`
+
 ### v0.2.4 24/05/2011
 
  * Add `:quiet` as an option on `Gofer::Host` instantiation

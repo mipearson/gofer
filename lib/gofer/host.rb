@@ -87,7 +87,7 @@ module Gofer
     end
 
     # Return +true+ if +path+ exits.
-    def exists? path
+    def exist? path
       @ssh.run("sh -c '[ -e #{path} ]'").exit_status == 0
     end
 

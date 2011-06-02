@@ -109,14 +109,14 @@ describe Gofer do
     end
   end
     
-  describe :exists? do
+  describe :exist? do
     it "should return true if a path or file exists" do
       raw_ssh "touch #{in_tmpdir 'exists'}"
-      @host.exists?(in_tmpdir 'exists').should be true
+      @host.exist?(in_tmpdir 'exists').should be true
     end
 
     it "should return false if a path does not exist" do
-      @host.exists?(in_tmpdir 'doesnotexist').should be false
+      @host.exist?(in_tmpdir 'doesnotexist').should be false
     end
   end
 

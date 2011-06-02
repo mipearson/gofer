@@ -27,7 +27,7 @@
 
 ### Interact with the filesystem
 
-    if h.exists?('remote_directory')
+    if h.exist?('remote_directory')
       h.run "rm -rf 'remote_directory'"
     end
 
