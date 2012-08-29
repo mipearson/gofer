@@ -2,38 +2,41 @@ require 'tempfile'
 
 module Gofer
   class HostError < Exception # :nodoc:
-    def initialize host, message
+    attr_reader :host, :response
+    def initialize host, response, message
+      @host = host
+      @response = response
       super "#{host.hostname}: #{message}"
     end
   end
- 
+
   class Host
-    
+
     attr_reader :hostname
     attr_accessor :quiet
 
     # Create a new Host connection
-    # 
+    #
     # Options:
-    # 
+    #
     # +quiet+:: Don't print stdout output from +run+ commands
     # All other+opts+ is passed through directly to Net::SSH.start
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
     def initialize _hostname, username, opts={}
       @hostname = _hostname
-      
+
       # support legacy positional argument use
       if opts.is_a? String
         opts = { :keys => [opts]}
       end
-      
+
       @quiet = opts.delete(:quiet)
-      
+
       # support legacy identity_file argument
       if opts[:identity_file]
         opts[:keys] = [opts.delete(:identity_file)]
       end
-      
+
       @ssh = SshWrapper.new(hostname, username, opts)
     end
 
@@ -41,10 +44,10 @@ module Gofer
     #
     # Raise an error if +command+ exits with a non-zero status.
     #
-    # Print +stdout+ and +stderr+ as they're received. 
+    # Print +stdout+ and +stderr+ as they're received.
     #
     # Return a Gofer::Response object.
-    # 
+    #
     # Options:
     #
     # +quiet+:: Don't print +stdout+, can also be set with +quiet=+ on the instance
@@ -54,19 +57,19 @@ module Gofer
       opts[:quiet] = quiet unless opts.include?(:quiet)
       response = @ssh.run command, opts
       if !opts[:capture_exit_status] && response.exit_status != 0
-        raise HostError.new(self, "Command #{command} failed with exit status #{@ssh.last_exit_status}")
+        raise HostError.new(self, response, "Command #{command} failed with exit status #{@ssh.last_exit_status}")
       end
       response
     end
-    
+
     # Run +commands+ one by one in order.
     #
     # Raise an error if a command in +commands+ exits with a non-zero status.
     #
-    # Print +stdout+ and +stderr+ as they're received. 
+    # Print +stdout+ and +stderr+ as they're received.
     #
     # Return a Gofer::Response object.
-    # 
+    #
     # Options:
     #
     # +quiet+:: Don't print +stdout+, can also be set with +quiet=+ on the instance
@@ -75,11 +78,11 @@ module Gofer
     # The behaviour of passing +capture_exit_status+ here is undefined.
     def run_multiple commands, opts={}
       return if commands.empty?
-      
+
       responses = commands.map do |command|
         run command, opts
       end
-      
+
       first_response = responses.shift
       responses.reduce(first_response) do |cursor, response|
         Response.new(cursor.stdout + response.stdout, cursor.stderr + response.stderr, cursor.output + response.output, 0)
@@ -91,7 +94,7 @@ module Gofer
       @ssh.run("sh -c '[ -e #{path} ]'").exit_status == 0
     end
 
-    # Return the contents of the file at +path+. 
+    # Return the contents of the file at +path+.
     def read path
       @ssh.read_file path
     end
@@ -107,11 +110,11 @@ module Gofer
       if response.exit_status == 0
         response.stdout.strip.split("\n")
       else
-        raise HostError.new(self, "Could not list #{path}, exit status #{response.exit_status}")
+        raise HostError.new(self, response, "Could not list #{path}, exit status #{response.exit_status}")
       end
     end
 
-    # Upload the file or directory at +from+ to +to+. 
+    # Upload the file or directory at +from+ to +to+.
     def upload from, to
       @ssh.upload from, to, :recursive => File.directory?(from)
     end
@@ -120,7 +123,7 @@ module Gofer
     def download from, to
       @ssh.download from, to, :recursive => directory?(from)
     end
-    
+
     # Write +data+ to a file at +to+
     def write data, to
       Tempfile.open "gofer_write" do |file|

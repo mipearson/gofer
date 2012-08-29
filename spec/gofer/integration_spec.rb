@@ -2,21 +2,21 @@ require 'spec_helper'
 require 'tempfile'
 
 describe Gofer do
- 
+
   HOSTNAME = ENV['TEST_HOST'] || 'localhost'
   USERNAME = ENV['TEST_USER'] || ENV['USER']
   IDENTITY_FILE = ENV['TEST_IDENTITY_FILE'] || '~/.ssh/id_rsa'
 
   def raw_ssh command
     out = `ssh -o PasswordAuthentication=no -ni #{IDENTITY_FILE} #{USERNAME}@#{HOSTNAME} #{command}`
-    raise "Command #{command} failed" unless $? == 0 
+    raise "Command #{command} failed" unless $? == 0
     out
   end
 
   def in_tmpdir path
     File.join(@tmpdir, path)
   end
-    
+
   def with_local_tmpdir template
     f = Tempfile.new template
     path = f.path
@@ -28,7 +28,7 @@ describe Gofer do
       FileUtils.rm_rf path unless ENV['KEEPTMPDIR']
     end
   end
-    
+
   before :all do
     @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
@@ -41,17 +41,17 @@ describe Gofer do
       raw_ssh "rm -rf #{@tmpdir}" if @tmpdir && @tmpdir =~ %r{gofertest}
     end
   end
-  
+
   describe :new do
     it "should support the legacy positional argument" do
       Gofer::Host.new(HOSTNAME, USERNAME, IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
     end
-    
+
     it "should support the legacy identity_file key" do
       Gofer::Host.new(HOSTNAME, USERNAME, :identity_file => IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
     end
   end
-  
+
   describe :hostname do
     it "should be the hostname of the host we're connecting to" do
       @host.hostname.should == HOSTNAME
@@ -62,32 +62,38 @@ describe Gofer do
     it "and capture stdout in @response.stdout" do
       @response.stdout.should == "stdout\n"
     end
-  
+
     it "and capture stderr in @response.stderr" do
       @response.stderr.should == "stderr\n"
     end
-  
+
     it "and combine captured stdout / stderr in @response.output" do
       @response.output.should == "stdout\nstderr\n"
     end
-  
+
     it "and @response by itself should be the captured stdout" do
       @response.should == "stdout\n"
     end
   end
-  
+
   describe :run do
-      
+
     describe "with a stdout and stderr responses" do
-      before :all do 
+      before :all do
         @response = @host.run "echo stdout; echo stderr 1>&2", :quiet_stderr => true
       end
-      
+
       it_should_behave_like "an output capturer"
     end
 
     it "should error if a command returns a non-zero response" do
-      lambda {@host.run "false"}.should raise_error /failed with exit status/
+      lambda {@host.run "false"}.should raise_error(/failed with exit status/)
+      begin
+        @host.run "false"
+      rescue Gofer::HostError => e
+        e.response.should be_a Gofer::Response
+        e.host.should be_a Gofer::Host
+      end
     end
 
     it "should capture a non-zero exit status if asked" do
@@ -95,7 +101,7 @@ describe Gofer do
       response.exit_status.should == 1
     end
   end
-  
+
   describe :run_multiple do
     describe "with stdout and stderr responses" do
       before :all do
@@ -103,12 +109,12 @@ describe Gofer do
       end
       it_should_behave_like "an output capturer"
     end
-    
+
     it "should error if a command returns a non-zero response" do
       lambda {@host.run_multiple ["echo", "false"]}.should raise_error /failed with exit status/
     end
   end
-    
+
   describe :exist? do
     it "should return true if a path or file exists" do
       raw_ssh "touch #{in_tmpdir 'exists'}"
@@ -137,7 +143,7 @@ describe Gofer do
       @host.read(@tmpdir + '/hello.txt').should == "hello\n"
     end
   end
-    
+
   describe :ls do
     it "should list the contents of a directory" do
       raw_ssh "mkdir #{@tmpdir}/lstmp && touch #{@tmpdir}/lstmp/f"
@@ -165,7 +171,7 @@ describe Gofer do
       end
     end
   end
-  
+
   describe :write do
     it "should write a file to the remote server" do
       @host.write("some data\n", in_tmpdir('written'))
@@ -190,7 +196,7 @@ describe Gofer do
       with_local_tmpdir 'download_dir' do |path|
         download_dir = in_tmpdir 'download_dir'
         raw_ssh "mkdir #{download_dir} && echo 'sup' > #{download_dir}/hey"
-      
+
         @host.download(download_dir, path)
         File.open(path + '/download_dir/hey').read.should == "sup\n"
       end
