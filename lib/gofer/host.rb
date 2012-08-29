@@ -115,13 +115,13 @@ module Gofer
     end
 
     # Upload the file or directory at +from+ to +to+.
-    def upload from, to
-      @ssh.upload from, to, :recursive => File.directory?(from)
+    def upload from, to, opts = {}
+      @ssh.upload from, to, {:recursive => File.directory?(from)}.merge(opts)
     end
 
     # Download the file or directory at +from+ to +to+
-    def download from, to
-      @ssh.download from, to, :recursive => directory?(from)
+    def download from, to, opts = {}
+      @ssh.download from, to, {:recursive => directory?(from)}.merge(opts)
     end
 
     # Write +data+ to a file at +to+
