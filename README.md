@@ -89,7 +89,7 @@
 
 (The MIT License)
 
-Copyright (c) 2011 Michael Pearson
+Copyright (c) 2011-13 Michael Pearson
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
