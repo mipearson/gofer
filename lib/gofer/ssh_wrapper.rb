@@ -13,7 +13,7 @@ module Gofer
     def run command, opts={}
       ssh_execute(ssh, command, opts)
     end
-    
+
     def read_file path
       scp.download! path
     end
@@ -27,12 +27,12 @@ module Gofer
     end
 
     private
-  
+
     def ssh
       @ssh ||= Net::SSH.start(*@net_ssh_args)
     end
-    
-    def scp 
+
+    def scp
       @scp ||= Net::SCP.new(ssh)
     end
 
@@ -40,7 +40,7 @@ module Gofer
       stdout, stderr, output = '', '', ''
       exit_code = 0
       ssh.open_channel do |channel|
-        
+
         channel.exec(command) do |ch, success|
           unless success
             raise "Couldn't execute command #{command} (ssh channel failure)"
@@ -63,7 +63,7 @@ module Gofer
             exit_code = data.read_long
             channel.close # Necessary or backgrounded processes will 'hang' the channel
           end
-          
+
         end
       end
 
