@@ -34,7 +34,7 @@
     h.write("a string buffer", 'a_remote_file')
     puts h.read('a_remote_file')
     puts h.ls('a_remote_dir').join(", ")
-    
+
 ### Respond to command errors
 
     h.run "false" # this will raise an error
@@ -56,31 +56,31 @@
     h.quiet = true                                   # never print stdout
 
 ### Run multiple commands
-    
+
     response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
     puts response.stdout # will print "hello\ngoodbye\n"
-    
+
 ## Planned Features
 
     # constant connection (no reconnect for each action)
     Gofer::Host.new(...).open do |h|
       h.run( ... )
     end
-    
+
     # overriding defaults
     h.set :quiet => true
     h.set :capture_exit_status => false
-    
+
     # Local system usage, too:
     Gofer::Localhost.new.run "hostname" # > my.macbook.com
 
 ## Testing
-  
+
   * Ensure that your user can ssh as itself to localhost using the key in `~/.ssh/id_rsa`.
   * Run `rspec spec` or `bundle install && rake spec`
 
 ## TODO
- 
+
 * ls, exists?, directory? should use sftp if available rather than shell commands
 * wrap STDOUT with host prefix for easy identification of system output
 * Deal with timeouts/disconnects on persistent connections
@@ -89,7 +89,7 @@
 
 (The MIT License)
 
-Copyright (c) 2011 Michael Pearson
+Copyright (c) 2011-13 Michael Pearson
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

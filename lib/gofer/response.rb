@@ -1,9 +1,9 @@
 module Gofer
 
-  # Response container for the various outputs from Gofer::Host#run  
+  # Response container for the various outputs from Gofer::Host#run
   class Response < String
     attr_reader :stdout, :stderr, :output, :exit_status
-    
+
     def initialize (_stdout, _stderr, _output, _exit_status)
       super _stdout
       @stdout = _stdout
