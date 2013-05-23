@@ -14,79 +14,99 @@
 
 ### Instantiation
 
-    h = Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
+``` ruby
+h = Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
+```
 
 ### Run a command
 
-    h.run "sudo stop mysqld"
+``` ruby
+h.run "sudo stop mysqld"
+```
 
 ### Copy some files
 
-    h.upload 'file', 'remote_file'
-    h.download 'remote_dir', 'dir'
+``` ruby
+h.upload 'file', 'remote_file'
+h.download 'remote_dir', 'dir'
+```
 
 ### Interact with the filesystem
 
-    if h.exist?('remote_directory')
-      h.run "rm -rf 'remote_directory'"
-    end
+``` ruby
+if h.exist?('remote_directory')
+  h.run "rm -rf 'remote_directory'"
+end
 
-    h.write("a string buffer", 'a_remote_file')
-    puts h.read('a_remote_file')
-    puts h.ls('a_remote_dir').join(", ")
+h.write("a string buffer", 'a_remote_file')
+puts h.read('a_remote_file')
+puts h.ls('a_remote_dir').join(", ")
+```
 
 ### Respond to command errors
 
-    h.run "false" # this will raise an error
-    response = h.run "false", :capture_exit_status => true # this won't ...
-    puts response.exit_status # and will make the exit status available
+``` ruby
+h.run "false" # this will raise an error
+response = h.run "false", :capture_exit_status => true # this won't ...
+puts response.exit_status # and will make the exit status available
+```
 
 ### Capture output
 
-    response = h.run "echo hello; echo goodbye 1>&2\n"
-    puts response         # will print "hello\n"
-    puts response.stdout  # will also print "hello\n"
-    puts response.stderr  # will print "goodbye\n"
-    puts response.output  # will print "hello\ngoodbye\n"
+``` ruby
+response = h.run "echo hello; echo goodbye 1>&2\n"
+puts response         # will print "hello\n"
+puts response.stdout  # will also print "hello\n"
+puts response.stderr  # will print "goodbye\n"
+puts response.output  # will print "hello\ngoodbye\n"
+```
 
 ### Suppress output
 
-    h.run "echo noisy", :quiet => true               # don't print stdout
-    h.run "echo noisier 1>&2", :quiet_stderr => true # don't print stderr
-    h.quiet = true                                   # never print stdout
+``` ruby
+h.run "echo noisy", :quiet => true               # don't print stdout
+h.run "echo noisier 1>&2", :quiet_stderr => true # don't print stderr
+h.quiet = true                                   # never print stdout
+```
 
 ### Run multiple commands
 
-    response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
-    puts response.stdout # will print "hello\ngoodbye\n"
+``` ruby
+response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
+puts response.stdout # will print "hello\ngoodbye\n"
+```
 
 ### Run the same commands on multiple hosts
 
-    cluster = Gopher.Cluster.new
-    cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
-    cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'])
+``` ruby
+cluster = Gopher::Cluster.new
+cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
+cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'])
 
-    cluster.run do |c|
-        c.run("hostname") # This will run on both hosts at once
-    end
+cluster.run do |c|
+    c.run("hostname") # This will run on both hosts at once
+end
 
-    cluster.run(:max_concurrency => 1) do |c|
-        c.run("sudo /etc/init.d/apache2 restart") # This will run on one machine at a time
-    end
+cluster.run(:max_concurrency => 1) do |c|
+    c.run("sudo /etc/init.d/apache2 restart") # This will run on one machine at a time
+end
+```
 
 ## Planned Features
 
-    # constant connection (no reconnect for each action)
-    Gofer::Host.new(...).open do |h|
-      h.run( ... )
-    end
+``` ruby
+# constant connection (no reconnect for each action)
+Gofer::Host.new(...).open do |h|
+  h.run( ... )
+end
 
-    # overriding defaults
-    h.set :quiet => true
-    h.set :capture_exit_status => false
+# overriding defaults
+h.set :quiet => true
+h.set :capture_exit_status => false
 
-    # Local system usage, too:
-    Gofer::Localhost.new.run "hostname" # > my.macbook.com
+# Local system usage, too:
+Gofer::Localhost.new.run "hostname" # > my.macbook.com
+```
 
 ## Testing
 
@@ -95,9 +115,11 @@
 
 ## TODO
 
-* ls, exists?, directory? should use sftp if available rather than shell commands
-* wrap STDOUT with host prefix for easy identification of system output
-* Deal with timeouts/disconnects on persistent connections
+  * ls, exists?, directory? should use sftp if available rather than shell commands
+  * wrap STDOUT with host prefix for easy identification of system output
+  * Deal with timeouts/disconnects on persistent connections
+  * CHANGELOG.md
+  * Release 1.0 & use Semver
 
 ## License
 
