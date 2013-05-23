@@ -60,6 +60,20 @@
     response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
     puts response.stdout # will print "hello\ngoodbye\n"
 
+### Run the same commands on multiple hosts
+
+    cluster = Gopher.Cluster.new
+    cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
+    cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'])
+
+    cluster.run do |c|
+        c.run("hostname") # This will run on both hosts at once
+    end
+
+    cluster.run(:max_concurrency => 1) do |c|
+        c.run("sudo /etc/init.d/apache2 restart") # This will run on one machine at a time
+    end
+
 ## Planned Features
 
     # constant connection (no reconnect for each action)
