@@ -227,42 +227,35 @@ describe Gofer do
   end
 
   describe :cluster do
-    it "should run commands in parallel" do
-      cluster = Gofer::Cluster.new
+    before do
+      @cluster = Gofer::Cluster.new
       # Cheat and use the same host repeatedly
-      host1 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      host2 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      cluster << host1
-      cluster << host2
+      @host1 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
+      @host2 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
+      @cluster << @host1
+      @cluster << @host2
+    end
 
-      results = cluster.run do |c|
+    it "should run commands in parallel" do
+      results = @cluster.run do |c|
         c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
       end
 
-      res1 = results[host1].stdout.lines.to_a
-      res2 = results[host2].stdout.lines.to_a
+      res1 = results[@host1].stdout.lines.to_a
+      res2 = results[@host2].stdout.lines.to_a
 
       expect(res1[1].to_f).to be > res2[0].to_f
-
     end
 
     it "should respect max_concurrency" do
-      cluster = Gofer::Cluster.new
-      # Cheat and use the same host repeatedly
-      host1 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      host2 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      cluster << host1
-      cluster << host2
-
-      results = cluster.run(:max_concurrency => 1) do |c|
+      results = @cluster.run(:max_concurrency => 1) do |c|
         c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
       end
 
-      res1 = results[host1].stdout.lines.to_a
-      res2 = results[host2].stdout.lines.to_a
+      res1 = results[@host1].stdout.lines.to_a
+      res2 = results[@host2].stdout.lines.to_a
 
       expect(res2[0].to_f).to be >= res1[1].to_f
-
     end
   end
 end
