@@ -236,7 +236,7 @@ describe Gofer do
       cluster << host2
 
       results = cluster.run do |c|
-        c.run "date '+%s%N'; sleep 1; date '+%s%N'"
+        c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
       end
 
       res1 = results[host1].stdout.lines.to_a
@@ -255,7 +255,7 @@ describe Gofer do
       cluster << host2
 
       results = cluster.run(:max_concurrency => 1) do |c|
-        c.run "date '+%s%N'; sleep 1; date '+%s%N'"
+        c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
       end
 
       res1 = results[host1].stdout.lines.to_a
