@@ -13,13 +13,14 @@ module Gofer
   class Host
 
     attr_reader :hostname
-    attr_accessor :quiet
+    attr_accessor :quiet, :output_prefix
 
     # Create a new Host connection
     #
     # Options:
     #
     # +quiet+:: Don't print stdout output from +run+ commands
+    # +output_prefix+:: Prefix each line of stdout to differentiate multiple host output
     # All other+opts+ is passed through directly to Net::SSH.start
     # See http://net-ssh.github.com/ssh/v2/api/index.html for valid arguments.
     def initialize _hostname, username, opts={}
@@ -31,6 +32,7 @@ module Gofer
       end
 
       @quiet = opts.delete(:quiet)
+      @output_prefix = opts.delete(:output_prefix)
 
       # support legacy identity_file argument
       if opts[:identity_file]
@@ -55,6 +57,7 @@ module Gofer
     # +capture_exit_status+:: Don't raise an error on a non-zero exit status
     def run command, opts={}
       opts[:quiet] = quiet unless opts.include?(:quiet)
+      opts[:output_prefix] = @output_prefix
       response = @ssh.run command, opts
       if !opts[:capture_exit_status] && response.exit_status != 0
         raise HostError.new(self, response, "Command #{command} failed with exit status #{@ssh.last_exit_status}")

@@ -61,6 +61,13 @@ puts response.stderr  # will print "goodbye\n"
 puts response.output  # will print "hello\ngoodbye\n"
 ```
 
+### Prefix output
+
+``` ruby
+h.output_prefix = 'apollo'        # or set :output_prefix on instantiation
+h.run "echo hello; echo goodbye"  # prints apollo: hello\napollo: goodbye
+```
+
 ### Suppress output
 
 ``` ruby
@@ -80,8 +87,8 @@ puts response.stdout # will print "hello\ngoodbye\n"
 
 ``` ruby
 cluster = Gopher::Cluster.new
-cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
-cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'])
+cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "   my")
+cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "other")
 
 cluster.run do |c|
     c.run("hostname") # This will run on both hosts at once

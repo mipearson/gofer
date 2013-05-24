@@ -86,6 +86,29 @@ describe Gofer do
       it_should_behave_like "an output capturer"
     end
 
+
+    it "should print stdout responses if quiet is false" do
+      $stdout.should_receive(:write).with "stdout\n"
+      @host.run "echo stdout", :quiet => false
+    end
+
+    it "should print stderr responses if quiet_stderr is false" do
+      $stderr.should_receive(:write).with "stderr\n"
+      @host.run "echo stderr 1>&2", :quiet_stderr => false
+    end
+
+    context "with a host output prefix" do
+      before do
+        @host.output_prefix = "derp"
+      end
+      it "should prefix each line of the stdout and stderr responses with the output prefix" do
+        $stdout.should_receive(:write).with "derp: stdout\nderp: stdout2\n"
+        $stderr.should_receive(:write).with "derp: stderr\nderp: stderr2\n"
+
+        @host.run "echo stdout; echo stdout2; echo stderr 1>&2; echo stderr2 1>&2", :quiet => false, :quiet_stderr => false
+      end
+    end
+
     it "should error if a command returns a non-zero response" do
       lambda {@host.run "false"}.should raise_error(/failed with exit status/)
       begin
