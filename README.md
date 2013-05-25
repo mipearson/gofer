@@ -120,6 +120,11 @@ Gofer::Localhost.new.run "hostname" # > my.macbook.com
   * Ensure that your user can ssh as itself to localhost using the key in `~/.ssh/id_rsa`.
   * Run `rspec spec` or `bundle install && rake spec`
 
+## Contributing
+
+Contributions should be via pull request. Please add tests and a note in the
+`README.md` for new functionality. Please use 1.8.7-compatiable syntax.
+
 ## TODO
 
   * ls, exists?, directory? should use sftp if available rather than shell commands
