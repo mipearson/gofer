@@ -29,6 +29,14 @@ describe Gofer do
     end
   end
 
+  def with_captured_output
+    @stdout = ''
+    @stderr = ''
+    @combined = ''
+    $stdout.stub!( :write ) { |*args| @stdout.<<( *args ); @combined.<<( *args )}
+    $stderr.stub!( :write ) { |*args| @stderr.<<( *args ); @combined.<<( *args )}
+  end
+
   before :all do
     @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
@@ -100,13 +108,19 @@ describe Gofer do
     context "with a host output prefix" do
       before do
         @host.output_prefix = "derp"
+        with_captured_output
       end
       it "should prefix each line of the stdout and stderr responses with the output prefix" do
-        $stdout.should_receive(:write).with "derp: stdout\nderp: stdout2\n"
-        $stderr.should_receive(:write).with "derp: stderr\nderp: stderr2\n"
-
         @host.run "echo stdout; echo stdout2; echo stderr 1>&2; echo stderr2 1>&2", :quiet => false, :quiet_stderr => false
+        @stdout.should eq "derp: stdout\nderp: stdout2\n"
+        @stderr.should eq "derp: stderr\nderp: stderr2\n"
       end
+
+      it "should not prefix if the output is not actually on a new line" do
+        @host.run "echo -n foo; echo bar; echo baz; ", :quiet => false
+        @combined.should eq "derp: foobar\nderp: baz\n"
+      end
+
     end
 
     it "should error if a command returns a non-zero response" do

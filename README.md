@@ -128,7 +128,6 @@ Contributions should be via pull request. Please add tests and a note in the
 ## TODO
 
   * ls, exists?, directory? should use sftp if available rather than shell commands
-  * wrap STDOUT with host prefix for easy identification of system output
   * Deal with timeouts/disconnects on persistent connections
   * CHANGELOG.md
   * Release 1.0 & use Semver

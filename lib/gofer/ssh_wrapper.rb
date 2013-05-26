@@ -8,6 +8,7 @@ module Gofer
 
     def initialize *args
       @net_ssh_args = args
+      @at_start_of_line = true
     end
 
     def run command, opts={}
@@ -74,7 +75,11 @@ module Gofer
     def wrap_output output, prefix
       return output unless prefix
 
-      "#{prefix}: " + output.gsub(/\n(.)/, "\n#{prefix}: \\1")
+      output = "#{prefix}: " + output if @at_start_of_line
+
+      @at_start_of_line = output.end_with?("\n")
+
+      output.gsub(/\n(.)/, "\n#{prefix}: \\1")
     end
 
   end
