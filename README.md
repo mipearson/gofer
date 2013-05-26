@@ -99,22 +99,6 @@ cluster.run(:max_concurrency => 1) do |c|
 end
 ```
 
-## Planned Features
-
-``` ruby
-# constant connection (no reconnect for each action)
-Gofer::Host.new(...).open do |h|
-  h.run( ... )
-end
-
-# overriding defaults
-h.set :quiet => true
-h.set :capture_exit_status => false
-
-# Local system usage, too:
-Gofer::Localhost.new.run "hostname" # > my.macbook.com
-```
-
 ## Testing
 
   * Ensure that your user can ssh as itself to localhost using the key in `~/.ssh/id_rsa`.
@@ -129,8 +113,10 @@ Contributions should be via pull request. Please add tests and a note in the
 
   * ls, exists?, directory? should use sftp if available rather than shell commands
   * Deal with timeouts/disconnects on persistent connections
-  * CHANGELOG.md
   * Release 1.0 & use Semver
+  * Ensure RDodc is complete & up to date, link to rdoc.info from README
+  * Add unit tests, bring in Travis.ci
+  * Local system usage (eg `Gofer::Localhost.new.run "hostname"`)
 
 ## License
 
