@@ -101,7 +101,9 @@ cluster.run(:max_concurrency => 1) do |c|
 end
 
 # Run a command on only one host
-cluster.run_once("rake migrations")
+cluster.run_once do |c|
+    c.run("rake migrations")
+end
 ```
 
 ## Testing

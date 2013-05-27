@@ -273,7 +273,9 @@ describe Gofer do
     end
 
     it "should respect run_once" do
-      res = @cluster.run_once("echo lols")
+      res = @cluster.run_once do |c|
+        c.run("echo lols")
+      end
 
       expect(res.stdout.chomp).to eq("lols")
     end

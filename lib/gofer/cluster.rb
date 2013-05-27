@@ -29,9 +29,8 @@ module Gofer
       block.call(ClusterCommandRunner.new(hosts, concurrency))
     end
 
-    def run_once(cmd, opts={})
-      host = @hosts.first
-      host.run(cmd, opts)
+    def run_once(opts={}, &block)
+      block.call(hosts.first)
     end
 
     class ClusterCommandRunner
