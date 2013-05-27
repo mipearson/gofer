@@ -99,6 +99,17 @@ cluster.run(:max_concurrency => 1) do |c|
 end
 ```
 
+### Run a command on only one host
+
+```
+cluster = Gopher::Cluster.new
+cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "host1")
+cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "host2")
+
+cluster.run_once("rake migrations") # Run migrations on only a single host
+```
+
+
 ## Testing
 
   * Ensure that your user can ssh as itself to localhost using the key in `~/.ssh/id_rsa`.
