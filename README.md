@@ -90,25 +90,19 @@ cluster = Gopher::Cluster.new
 cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "   my")
 cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "other")
 
+# Run on all the hosts at once
 cluster.run do |c|
-    c.run("hostname") # This will run on both hosts at once
+  c.run("hostname")
 end
 
+# Run on only one host at a time
 cluster.run(:max_concurrency => 1) do |c|
-    c.run("sudo /etc/init.d/apache2 restart") # This will run on one machine at a time
+  c.run("sudo /etc/init.d/apache2 restart")
 end
+
+# Run a command on only one host
+cluster.run_once("rake migrations")
 ```
-
-### Run a command on only one host
-
-```
-cluster = Gopher::Cluster.new
-cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "host1")
-cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "host2")
-
-cluster.run_once("rake migrations") # Run migrations on only a single host
-```
-
 
 ## Testing
 
