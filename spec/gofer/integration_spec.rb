@@ -271,5 +271,11 @@ describe Gofer do
 
       expect(res2[0].to_f).to be >= res1[1].to_f
     end
+
+    it "should respect run_once" do
+      res = @cluster.run_once("echo lols")
+
+      expect(res.stdout.chomp).to eq("lols")
+    end
   end
 end
