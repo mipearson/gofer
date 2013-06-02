@@ -1,5 +1,10 @@
 # Revision History
 
+### v0.4.0
+
+  * Rework `Gofer::Cluster` to be a direct proxy, rather than requiring a block
+  * Add all `Gofer::Host` methods to the `Gofer::Cluster` proxy (@rich0h)
+
 ### v0.3.1
 
  * Prefix stderr/stdout per host with `:output_prefix`
