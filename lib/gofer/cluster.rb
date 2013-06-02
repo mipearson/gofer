@@ -41,7 +41,7 @@ module Gofer
 
       # Spawn +concurrency+ worker threads, each of which pops work off the
       # +_in+ queue, and writes values to the +_out+ queue for syncronisation.
-      def run(cmd, opts={})
+      def threaded(meth, *args)
         _in = run_queue
         length = run_queue.length
         _out = Queue.new
@@ -51,7 +51,7 @@ module Gofer
             loop do
               host = _in.pop(false) rescue Thread.exit
 
-              results[host] = host.run(cmd, opts)
+              results[host] = host.send(meth, *args)
               _out << true
             end
           end
@@ -62,6 +62,12 @@ module Gofer
         end
 
         return results
+      end
+
+      [:run, :run_multiple, :exist?, :read, :directory?, :ls, :upload, :download, :write].each do |method|
+        self.send(:define_method, method) do |*args|
+          return threaded(method, *args)
+        end
       end
 
       def run_queue
