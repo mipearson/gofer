@@ -251,9 +251,7 @@ describe Gofer do
     end
 
     it "should run commands in parallel" do
-      results = @cluster.run do |c|
-        c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
-      end
+      results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
 
       res1 = results[@host1].stdout.lines.to_a
       res2 = results[@host2].stdout.lines.to_a
@@ -262,22 +260,13 @@ describe Gofer do
     end
 
     it "should respect max_concurrency" do
-      results = @cluster.run(:max_concurrency => 1) do |c|
-        c.run "ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'"
-      end
+      @cluster.max_concurrency = 1
+      results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
 
       res1 = results[@host1].stdout.lines.to_a
       res2 = results[@host2].stdout.lines.to_a
 
       expect(res2[0].to_f).to be >= res1[1].to_f
-    end
-
-    it "should respect run_once" do
-      res = @cluster.run_once do |c|
-        c.run("echo lols")
-      end
-
-      expect(res.stdout.chomp).to eq("lols")
     end
   end
 end

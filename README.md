@@ -91,19 +91,19 @@ cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :outpu
 cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "other")
 
 # Run on all the hosts at once
-cluster.run do |c|
-  c.run("hostname")
-end
+cluster.run "hostname"
 
 # Run on only one host at a time
-cluster.run(:max_concurrency => 1) do |c|
-  c.run("sudo /etc/init.d/apache2 restart")
-end
+cluster.max_concurrency = 1
+cluster.run("sudo /etc/init.d/apache2 restart")
 
 # Run a command on only one host
-cluster.run_once do |c|
-    c.run("rake migrations")
-end
+host = cluster.shuffle.first
+host.run("rake migrations")
+
+# Inspect the results from each host
+results = cluster.run "echo hostname"
+puts results.values.join(", ") # will print "my.host.com, other.host.com"
 ```
 
 ## Testing
