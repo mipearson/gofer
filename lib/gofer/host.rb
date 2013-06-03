@@ -26,18 +26,8 @@ module Gofer
     def initialize _hostname, username, opts={}
       @hostname = _hostname
 
-      # support legacy positional argument use
-      if opts.is_a? String
-        opts = { :keys => [opts]}
-      end
-
       @quiet = opts.delete(:quiet)
       @output_prefix = opts.delete(:output_prefix)
-
-      # support legacy identity_file argument
-      if opts[:identity_file]
-        opts[:keys] = [opts.delete(:identity_file)]
-      end
 
       @ssh = SshWrapper.new(hostname, username, opts)
     end

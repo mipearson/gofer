@@ -50,16 +50,6 @@ describe Gofer do
     end
   end
 
-  describe :new do
-    it "should support the legacy positional argument" do
-      Gofer::Host.new(HOSTNAME, USERNAME, IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
-    end
-
-    it "should support the legacy identity_file key" do
-      Gofer::Host.new(HOSTNAME, USERNAME, :identity_file => IDENTITY_FILE).run("echo hello", :quiet => true).should == "hello\n"
-    end
-  end
-
   describe :hostname do
     it "should be the hostname of the host we're connecting to" do
       @host.hostname.should == HOSTNAME

@@ -1,7 +1,8 @@
 # Revision History
 
-### v0.4.1
+### v0.5.0
 
+  * Remove legacy argument support for `Gofer::Host.new`
   * Remove superfluous `run_multiple`
 
 ### v0.4.0
