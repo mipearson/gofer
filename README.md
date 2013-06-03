@@ -76,13 +76,6 @@ h.run "echo noisier 1>&2", :quiet_stderr => true # don't print stderr
 h.quiet = true                                   # never print stdout
 ```
 
-### Run multiple commands
-
-``` ruby
-response = h.run_multiple(['echo hello', 'echo goodbye'], :quiet => true)
-puts response.stdout # will print "hello\ngoodbye\n"
-```
-
 ### Run the same commands on multiple hosts
 
 ``` ruby

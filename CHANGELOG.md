@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.4.1
+
+  * Remove superfluous `run_multiple`
+
 ### v0.4.0
 
   * Rework `Gofer::Cluster` to be a direct proxy, rather than requiring a block

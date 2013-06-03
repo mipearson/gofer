@@ -139,19 +139,6 @@ describe Gofer do
     end
   end
 
-  describe :run_multiple do
-    describe "with stdout and stderr responses" do
-      before :all do
-        @response = @host.run_multiple ["echo stdout", "echo stderr 1>&2"], :quiet_stderr => true
-      end
-      it_should_behave_like "an output capturer"
-    end
-
-    it "should error if a command returns a non-zero response" do
-      lambda {@host.run_multiple ["echo", "false"]}.should raise_error /failed with exit status/
-    end
-  end
-
   describe :exist? do
     it "should return true if a path or file exists" do
       raw_ssh "touch #{in_tmpdir 'exists'}"
