@@ -15,7 +15,7 @@
 ### Instantiation
 
 ``` ruby
-h = Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'])
+h = Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['~/.ssh/id_rsa'])
 ```
 
 ### Run a command

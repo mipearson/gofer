@@ -1,9 +1,11 @@
 require 'thread'
 
 module Gofer
+  # A collection of Gofer::Host instances that can run commands simultaneously
   class Cluster
 
     attr_reader :hosts
+
     attr_accessor :max_concurrency
 
     def initialize(parties=[], opts={})
