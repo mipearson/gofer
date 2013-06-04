@@ -1,44 +1,10 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Gofer do
-
-  HOSTNAME = ENV['TEST_HOST'] || 'localhost'
-  USERNAME = ENV['TEST_USER'] || ENV['USER']
-  IDENTITY_FILE = ENV['TEST_IDENTITY_FILE'] || '~/.ssh/id_rsa'
-
-  def raw_ssh command
-    out = `ssh -o PasswordAuthentication=no -ni #{IDENTITY_FILE} #{USERNAME}@#{HOSTNAME} #{command}`
-    raise "Command #{command} failed" unless $? == 0
-    out
-  end
-
-  def in_tmpdir path
-    File.join(@tmpdir, path)
-  end
-
-  def with_local_tmpdir template
-    f = Tempfile.new template
-    path = f.path
-    f.unlink
-    FileUtils.mkdir path
-    begin
-      yield path
-    ensure
-      FileUtils.rm_rf path unless ENV['KEEPTMPDIR']
-    end
-  end
-
-  def with_captured_output
-    @stdout = ''
-    @stderr = ''
-    @combined = ''
-    $stdout.stub!( :write ) { |*args| @stdout.<<( *args ); @combined.<<( *args )}
-    $stderr.stub!( :write ) { |*args| @stderr.<<( *args ); @combined.<<( *args )}
-  end
+describe Gofer::Host do
 
   before :all do
-    @host = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
+    @host = Gofer::Host.new(test_hostname, test_username, :keys => [test_identity_file], :quiet => true)
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
   end
 
@@ -52,7 +18,7 @@ describe Gofer do
 
   describe :hostname do
     it "should be the hostname of the host we're connecting to" do
-      @host.hostname.should == HOSTNAME
+      @host.hostname.should == test_hostname
     end
   end
 
@@ -214,36 +180,6 @@ describe Gofer do
         @host.download(download_dir, path)
         File.open(path + '/download_dir/hey').read.should == "sup\n"
       end
-    end
-  end
-
-  describe :cluster do
-    before do
-      @cluster = Gofer::Cluster.new
-      # Cheat and use the same host repeatedly
-      @host1 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      @host2 = Gofer::Host.new(HOSTNAME, USERNAME, :keys => [IDENTITY_FILE], :quiet => true)
-      @cluster << @host1
-      @cluster << @host2
-    end
-
-    it "should run commands in parallel" do
-      results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
-
-      res1 = results[@host1].stdout.lines.to_a
-      res2 = results[@host2].stdout.lines.to_a
-
-      expect(res1[1].to_f).to be > res2[0].to_f
-    end
-
-    it "should respect max_concurrency" do
-      @cluster.max_concurrency = 1
-      results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
-
-      res1 = results[@host1].stdout.lines.to_a
-      res2 = results[@host2].stdout.lines.to_a
-
-      expect(res2[0].to_f).to be >= res1[1].to_f
     end
   end
 end
