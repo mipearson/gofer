@@ -6,15 +6,10 @@ describe Gofer::Host do
   before :all do
     @host = Gofer::Host.new(test_hostname, test_username, :keys => [test_identity_file], :quiet => true)
     @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
+    make_tmpdir
   end
 
-  after :all do
-    if ENV['KEEPTMPDIR']
-      puts "TMPDIR is #{@tmpdir}"
-    else
-      raw_ssh "rm -rf #{@tmpdir}" if @tmpdir && @tmpdir =~ %r{gofertest}
-    end
-  end
+  after(:all) { clean_tmpdir }
 
   describe :hostname do
     it "should be the hostname of the host we're connecting to" do

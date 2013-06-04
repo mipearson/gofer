@@ -18,6 +18,18 @@ module IntegrationHelpers
     out
   end
 
+  def make_tmpdir
+    @tmpdir = raw_ssh("mktemp -d /tmp/gofertest.XXXXX").chomp
+  end
+
+  def clean_tmpdir
+    if ENV['KEEPTMPDIR']
+      puts "TMPDIR is #{@tmpdir}"
+    else
+      raw_ssh "rm -rf #{@tmpdir}" if @tmpdir && @tmpdir =~ %r{gofertest}
+    end
+  end
+
   def in_tmpdir path
     File.join(@tmpdir, path)
   end
