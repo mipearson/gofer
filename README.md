@@ -9,6 +9,7 @@
   * allow you to access captured STDOUT and STDERR individually or as a combined string
   * override the above: return non-zero exit status instead of raising an error, suppress output
   * persist the SSH connection so that multiple commands don't incur connection penalties
+  * allow multiple simultaneous command execution on a cluster of hosts via `Gofer::Cluster`
 
 ## Examples
 
@@ -116,6 +117,7 @@ Contributions should be via pull request. Please add tests and a note in the
   * Release 1.0 & use Semver
   * Ensure RDodc is complete & up to date, link to rdoc.info from README
   * Add unit tests, bring in Travis.ci
+  * Bring in CodeClimate
   * Local system usage (eg `Gofer::Localhost.new.run "hostname"`)
 
 ## License
