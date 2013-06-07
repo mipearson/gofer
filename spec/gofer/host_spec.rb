@@ -11,6 +11,17 @@ describe Gofer::Host do
 
   after(:all) { clean_tmpdir }
 
+  describe :new do
+    before { Gofer::Host.any_instance.stub(:warn => nil) }
+    it "should support the legacy positional argument" do
+      Gofer::Host.new(test_hostname, test_username, test_identity_file).run("echo hello", :quiet => true).should == "hello\n"
+    end
+
+    it "should support the legacy identity_file key" do
+      Gofer::Host.new(test_hostname, test_username, :identity_file => test_identity_file).run("echo hello", :quiet => true).should == "hello\n"
+    end
+  end
+
   describe :hostname do
     it "should be the hostname of the host we're connecting to" do
       @host.hostname.should == test_hostname

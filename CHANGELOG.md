@@ -2,7 +2,7 @@
 
 ### v0.5.0
 
-  * Remove legacy argument support for `Gofer::Host.new`
+  * Deprecate legacy arguments in Gofer::Host.new
   * Remove superfluous `run_multiple`
   * Better RDoc & tests for Gofer::Cluster
 
