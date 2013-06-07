@@ -5,6 +5,7 @@
   * Deprecate legacy arguments in Gofer::Host.new
   * Remove superfluous `run_multiple`
   * Better RDoc & tests for Gofer::Cluster
+  * `test.sh` to test on multiple rubies
 
 ### v0.4.0
 

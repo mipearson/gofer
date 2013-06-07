@@ -108,6 +108,7 @@ puts results.values.join(", ") # will print "my.host.com, other.host.com"
 
   * Ensure that your user can ssh as itself to localhost using the key in `~/.ssh/id_rsa`.
   * Run `rspec spec` or `bundle install && rake spec`
+  * rbenv users can run `test.sh` and ensure their code works on Ruby versions we support
 
 ## Contributing
 
