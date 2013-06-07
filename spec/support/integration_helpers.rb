@@ -37,6 +37,7 @@ module IntegrationHelpers
   def with_local_tmpdir template
     f = Tempfile.new template
     path = f.path
+    f.close
     f.unlink
     FileUtils.mkdir path
     begin
