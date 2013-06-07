@@ -1,5 +1,7 @@
 # Gofer!
 
+[![Code Climate](https://codeclimate.com/github/mipearson/gofer.png)](https://codeclimate.com/github/mipearson/gofer)
+
 **Gofer** is a set of wrappers around the Net::SSH suite of tools to enable consistent access to remote systems.
 
 **Gofer** has been written to support the needs of system automation scripts. As such, **gofer** will:
@@ -10,6 +12,8 @@
   * override the above: return non-zero exit status instead of raising an error, suppress output
   * persist the SSH connection so that multiple commands don't incur connection penalties
   * allow multiple simultaneous command execution on a cluster of hosts via `Gofer::Cluster`
+
+Full documentation for latest gem release is at [RDoc](http://rdoc.info/gems/gofer/frames)
 
 ## Examples
 
@@ -115,9 +119,7 @@ Contributions should be via pull request. Please add tests and a note in the
   * ls, exists?, directory? should use sftp if available rather than shell commands
   * Deal with timeouts/disconnects on persistent connections
   * Release 1.0 & use Semver
-  * Ensure RDodc is complete & up to date, link to rdoc.info from README
   * Add unit tests, bring in Travis.ci
-  * Bring in CodeClimate
   * Local system usage (eg `Gofer::Localhost.new.run "hostname"`)
 
 ## License
