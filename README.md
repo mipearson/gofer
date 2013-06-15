@@ -1,6 +1,7 @@
 # Gofer!
 
-[![Code Climate](https://codeclimate.com/github/mipearson/gofer.png)](https://codeclimate.com/github/mipearson/gofer)
+[![Code Climate](https://codeclimate.com/github/mipearson/gofer.png)](https://codeclimate.com/github/mipearson/gofer) [![Gem Version](https://badge.fury.io/rb/gofer.png)](http://badge.fury.io/rb/gofer) [![Dependency Status](https://gemnasium.com/mipearson/gofer.png)](https://gemnasium.com/mipearson/gofer)
+
 
 **Gofer** is a set of wrappers around the Net::SSH suite of tools to enable consistent access to remote systems.
 
