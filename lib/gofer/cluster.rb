@@ -88,10 +88,10 @@ module Gofer
     # +_in+ queue, and writes values to the +_out+ queue for syncronisation.
     def threaded(meth, *args)
       _in = run_queue
-      length = run_queue.length
+      length = _in.length
       _out = Queue.new
       results = {}
-      (0...concurrency).map do
+      concurrency.times do
         Thread.new do
           loop do
             host = _in.pop(false) rescue Thread.exit
