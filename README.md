@@ -85,7 +85,7 @@ h.quiet = true                                   # never print stdout
 ### Run the same commands on multiple hosts
 
 ``` ruby
-cluster = Gopher::Cluster.new
+cluster = Gofer::Cluster.new
 cluster << Gofer::Host.new('my.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "   my")
 cluster << Gofer::Host.new('other.host.com', 'ubuntu', :keys => ['key.pem'], :output_prefix => "other")
 
