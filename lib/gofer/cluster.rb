@@ -94,10 +94,14 @@ module Gofer
       concurrency.times do
         Thread.new do
           loop do
-            host = _in.pop(false) rescue Thread.exit
+            begin
+              host = _in.pop(false) rescue Thread.exit
 
-            results[host] = host.send(meth, *args)
-            _out << true
+              results[host] = host.send(meth, *args)
+              _out << true
+            rescue
+              _out << false
+            end
           end
         end
       end
