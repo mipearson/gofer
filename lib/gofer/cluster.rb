@@ -86,11 +86,12 @@ module Gofer
 
     # Spawn +concurrency+ worker threads, each of which pops work off the
     # +_in+ queue, and writes values to the +_out+ queue for syncronisation.
-    def threaded(meth, *args)
+    def threaded(meth, *args, &blk)
       _in = run_queue
       length = _in.length
       _out = Queue.new
       results = {}
+      exceptions = []
       concurrency.times do
         Thread.new do
           loop do
@@ -99,7 +100,8 @@ module Gofer
 
               results[host] = host.send(meth, *args)
               _out << true
-            rescue
+            rescue Exception => e
+              exceptions << e
               _out << false
             end
           end
@@ -108,6 +110,10 @@ module Gofer
 
       length.times do
         _out.pop
+      end
+
+      if blk && !exceptions.empty?
+        exceptions.each(&blk)
       end
 
       results
