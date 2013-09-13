@@ -48,38 +48,52 @@ module Gofer
     end
 
     # Run a command on this Gofer::Cluster. See Gofer::Host#run
-    def run *args
-      threaded(:run, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def run *args, &blk
+      threaded(:run, *args, &blk)
     end
 
     # Check if a path exists on each host in the cluster. See Gofer::Host#exist?
-    def exist? *args
-      threaded(:exist?, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def exist? *args, &blk
+      threaded(:exist?, *args, &blk)
     end
 
     # Check if a path is a directory on each host in the cluster. See Gofer::Host#directory?
-    def directory? *args
-      threaded(:directory?, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def directory? *args, &blk
+      threaded(:directory?, *args, &blk)
     end
 
     # List a directory on each host in the cluster. See Gofer::Host#ls
-    def ls *args
-      threaded(:ls, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def ls *args, &blk
+      threaded(:ls, *args, &blk)
     end
 
     # Upload to each host in the cluster. See Gofer::Host#ls
-    def upload *args
-      threaded(:upload, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def upload *args, &blk
+      threaded(:upload, *args, &blk)
     end
 
     # Read a file on each host in the cluster. See Gofer::Host#read
-    def read *args
-      threaded(:read, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def read *args, &blk
+      threaded(:read, *args, &blk)
     end
 
     # Write a file to each host in the cluster. See Gofer::Host#write
-    def write *args
-      threaded(:write, *args)
+    # If a block is provided, any exceptions raised will be yielded to the
+    # block in the order they occured
+    def write *args, &blk
+      threaded(:write, *args, &blk)
     end
 
     private
