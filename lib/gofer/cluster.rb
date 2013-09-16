@@ -91,17 +91,21 @@ module Gofer
       length = _in.length
       _out = Queue.new
       results = {}
+      errors = {}
+      results_semaphore = Mutex.new
+      errors_semaphore = Mutex.new
       concurrency.times do
         Thread.new do
           loop do
-            begin
-              host = _in.pop(false) rescue Thread.exit
+            host = _in.pop(false) rescue Thread.exit
 
-              results[host] = host.send(meth, *args)
-              _out << true
-            rescue
-              _out << false
+            begin
+              result = host.send(meth, *args)
+              results_semaphore.synchronize { results[host] = result }
+            rescue Exception => e
+              errors_semaphore.synchronize { errors[host] = e }
             end
+            _out << true
           end
         end
       end
@@ -110,7 +114,11 @@ module Gofer
         _out.pop
       end
 
-      results
+      if errors.size > 0
+        raise Gofer::ClusterError.new(errors)
+      else
+        results
+      end
     end
 
     def run_queue

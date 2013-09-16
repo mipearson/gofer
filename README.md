@@ -103,6 +103,17 @@ host.run("rake migrations")
 # Inspect the results from each host
 results = cluster.run "echo hostname"
 puts results.values.join(", ") # will print "my.host.com, other.host.com"
+
+# Capture exceptions from each host
+begin
+  cluster.run "rake deploy"
+rescue Gofer::ClusterError => e
+  e.errors.each do |host, exception|
+    $stderr.puts "Failed on #{host} with #{exception}, rolling back ..."
+    host.run "rake rollback"
+  end
+  raise e
+end
 ```
 
 ## Testing

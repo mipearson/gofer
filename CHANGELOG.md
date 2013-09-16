@@ -1,5 +1,9 @@
 # Revision History
 
+### v0.5.1
+
+  * Add `Gofer::ClusterError` to encapsulate errors encountered during clustered runs
+
 ### v0.5.0
 
   * Deprecate legacy arguments in Gofer::Host.new

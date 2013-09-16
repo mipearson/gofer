@@ -33,6 +33,17 @@ describe Gofer::Cluster do
     expect(res2[0].to_f).to be >= res1[1].to_f
   end
 
+  it "should encapsulate errors in a Gofer::ClusterError container exception" do
+    expect { @cluster.run("false") }.to raise_error(Gofer::ClusterError)
+    begin
+      @cluster.run "false"
+    rescue Gofer::ClusterError => e
+      expect(e.errors.keys.length).to eq(2)
+      expect(e.errors[@host1]).to be_a(Gofer::HostError)
+      expect(e.errors[@host2]).to be_a(Gofer::HostError)
+    end
+  end
+
   # TODO: Make this a custom matcher?
   def results_should_eq expected, &block
     results = block.call
