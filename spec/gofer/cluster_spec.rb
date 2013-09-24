@@ -15,7 +15,7 @@ describe Gofer::Cluster do
   after(:all) { clean_tmpdir }
 
   it "should run commands in parallel" do
-    results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
+    results = @cluster.run("bash -l -c \"ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'\"")
 
     res1 = results[@host1].stdout.lines.to_a
     res2 = results[@host2].stdout.lines.to_a
@@ -25,7 +25,7 @@ describe Gofer::Cluster do
 
   it "should respect max_concurrency" do
     @cluster.max_concurrency = 1
-    results = @cluster.run("ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'")
+    results = @cluster.run("bash -l -c \"ruby -e 'puts Time.now.to_f; sleep 0.1; puts Time.now.to_f'\"")
 
     res1 = results[@host1].stdout.lines.to_a
     res2 = results[@host2].stdout.lines.to_a
