@@ -83,6 +83,10 @@ describe Gofer::Host do
         @combined.should eq "derp: foobar\nderp: baz\n"
       end
 
+      it "should process stdin when stdin is set" do
+        @host.run "sed 's/foo/baz/'", :stdin => "foobar", :quiet => false
+        @stdout.should eq "derp: bazbar"
+      end
     end
 
     it "should error if a command returns a non-zero response" do
