@@ -65,6 +65,11 @@ module Gofer
             channel.close # Necessary or backgrounded processes will 'hang' the channel
           end
 
+          if opts[:stdin]
+            channel.send_data(opts[:stdin])
+            channel.eof!
+          end
+
         end
       end
 
