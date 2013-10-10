@@ -67,6 +67,12 @@ puts response.stderr  # will print "goodbye\n"
 puts response.output  # will print "hello\ngoodbye\n"
 ```
 
+### Send input
+
+``` ruby
+response = h.run "sed 's/foo/bar/' 1>&2\n", :stdin => "hello foo\n"  # will print "hello bar"
+```
+
 ### Prefix output
 
 ``` ruby
