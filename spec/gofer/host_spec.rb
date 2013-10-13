@@ -85,7 +85,7 @@ describe Gofer::Host do
 
       it "should process stdin when stdin is set" do
         @host.run "sed 's/foo/baz/'", :stdin => "foobar", :quiet => false
-        @stdout.should eq "derp: bazbar"
+        @stdout.should eq "derp: bazbar\n"
       end
     end
 
