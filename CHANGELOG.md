@@ -1,8 +1,9 @@
 # Revision History
 
-### v0.5.1
+### v0.6.0
 
   * Add `Gofer::ClusterError` to encapsulate errors encountered during clustered runs
+  * Add support for `stdin` option on `Gofer::Host#run`
 
 ### v0.5.0
 
