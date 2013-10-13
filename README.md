@@ -70,7 +70,7 @@ puts response.output  # will print "hello\ngoodbye\n"
 ### Send input
 
 ``` ruby
-response = h.run "sed 's/foo/bar/' 1>&2\n", :stdin => "hello foo\n"  # will print "hello bar"
+h.run "sed 's/foo/bar/' 1>&2\n", :stdin => "hello foo\n" # response will be "hello bar"
 ```
 
 ### Prefix output

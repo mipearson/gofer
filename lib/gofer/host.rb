@@ -62,6 +62,7 @@ module Gofer
     # +quiet+:: Don't print +stdout+, can also be set with +quiet=+ on the instance
     # +quiet_stderr+:: Don't print +stderr+
     # +capture_exit_status+:: Don't raise an error on a non-zero exit status
+    # +stdin+:: Send a string on +stdin+ then close the file
     def run command, opts={}
       opts[:quiet] = quiet unless opts.include?(:quiet)
       opts[:output_prefix] = @output_prefix
