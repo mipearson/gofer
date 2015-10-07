@@ -132,7 +132,7 @@ end
 ## Contributing
 
 Contributions should be via pull request. Please add tests and a note in the
-`README.md` for new functionality. Please use 1.8.7-compatiable syntax.
+`README.md` for new functionality. Please use 1.8.7-compatible syntax.
 
 ## TODO
 
